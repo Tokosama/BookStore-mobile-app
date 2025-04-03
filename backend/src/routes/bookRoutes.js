@@ -4,21 +4,17 @@ import Book from "../models/Book.js";
 import protectRoute from "../middleware/auth.middleware.js";
 const router = express.Router();
 
-router.post("/", async (req, res) => {
-  res.send();
-
+router.post("/", protectRoute, async (req, res) => {
   try {
     const { title, caption, rating, image } = req.body;
 
     if (!image || !title || !caption || !rating) {
       return res.status(400).json({ message: "Please provide all fields" });
     }
-
     // upload the image to cloudinary
     const uploadResponse = await cloudinary.uploader.upload(image);
     const imageUrl = uploadResponse.secure_url;
     //save to the databse
-
     const newBook = new Book({
       title,
       caption,
@@ -28,6 +24,7 @@ router.post("/", async (req, res) => {
     });
 
     await newBook.save();
+
     res.status(201).json(newBook);
   } catch (error) {
     console.log("Error creating Book", error);
@@ -60,17 +57,17 @@ router.get("/", protectRoute, async (req, res) => {
   }
 });
 
-
-router.get("/user",protectRoute,async(req,res)=>{
-    try{
-        const books = await Books.find({user:req.user._id}).sort({createdAt:-1});
-        res.json(books);
-    }catch(error){
-        console.error("Get user books error:",error.message);
-        res.status(500).json({message:"Server error"});
-    }
-
-})
+router.get("/user", protectRoute, async (req, res) => {
+  try {
+    const books = await Book.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.json(books);
+  } catch (error) {
+    console.error("Get user books error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 router.delete("/:id", protectRoute, async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
