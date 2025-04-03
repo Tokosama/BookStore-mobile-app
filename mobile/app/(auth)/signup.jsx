@@ -29,8 +29,6 @@ export default function Signup() {
     if (!result.success) Alert.alert("Error", result.error);
   };
 
-  console.log(user)
-  console.log(token)
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
