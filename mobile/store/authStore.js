@@ -1,27 +1,25 @@
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {API_URL} from "../constants/api"
+import { API_URL } from "../constants/api";
 export const useAuthStore = create((set) => ({
   user: null,
   token: null,
   isLoading: false,
+  isCheckingAuth: true,
 
   register: async (username, email, password) => {
     try {
-      const response = await fetch(
-        `${API_URL}/auth/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Something went wrong");
@@ -39,19 +37,16 @@ export const useAuthStore = create((set) => ({
   login: async (email, password) => {
     set({ isLoading: true });
     try {
-      const response = await fetch(
-        `${API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Something went wrong");
@@ -63,9 +58,8 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       set({ isLoading: false });
       return { success: false, error: error.message };
-    } finally{
+    } finally {
       set({ isLoading: false });
-      
     }
   },
   checkAuth: async () => {
@@ -77,6 +71,8 @@ export const useAuthStore = create((set) => ({
       set({ token, user });
     } catch (error) {
       console.log("Auth check failed", error);
+    } finally {
+      set({ isCheckingAuth: false });
     }
   },
   logout: async () => {
