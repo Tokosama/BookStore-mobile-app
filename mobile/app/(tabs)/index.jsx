@@ -15,7 +15,7 @@ import { API_URL } from "../../constants/api";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 import { formatPublishDate } from "../../lib/utils";
 import Loader from "../../components/Loader";
 export default function Home() {

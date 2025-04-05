@@ -63,6 +63,9 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       set({ isLoading: false });
       return { success: false, error: error.message };
+    } finally{
+      set({ isLoading: false });
+      
     }
   },
   checkAuth: async () => {
