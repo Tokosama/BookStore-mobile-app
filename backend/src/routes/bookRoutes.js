@@ -75,7 +75,7 @@ router.delete("/:id", protectRoute, async (req, res) => {
     const book = await Book.findById(req.params.id);
     if (!book) return res.status(404).json({ message: "Book not fouund" });
     //check if user is the creator of the book
-    if (book.user.toString !== req.user._id.toString())
+    if (book.user.toString() !== req.user._id.toString())
       return res.status(401).json({ message: "Unauthorized" });
 
     //delete image from cloudinary as well
